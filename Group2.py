@@ -70,8 +70,21 @@ def Gram_Schmidt(input, size):
 
 #Main function is the over all interface of the program, which consists of the input, process, and output
 def main():
-    #Given Matrix
-    matrix = np.array([[1,2,-1,0],[2,2,0,1],[1,1,1,0]])
+    # Gets the matrix dimensions from user
+    rows = int(input("Enter the desired number of vectors (rows): "))
+    cols = int(input("Enter the dimension of each vector (columns): "))
+    
+    # Initialize empty list to store vectors
+    matrix_list = []
+    
+    # Gets each vector(element) from user
+    for i in range(rows):
+        print(f"Vector {i+1} (space-separated): ")
+        row = list(map(int, input().split()))
+        matrix_list.append(row)
+    
+    # Convert to numpy array
+    matrix = np.array(matrix_list)
     #Getting the size of the matrix
     matrix_size = matrix.shape
 
@@ -86,7 +99,7 @@ def main():
         end_matrix = sp.Matrix(result_matrix).applyfunc(sp.nsimplify)
 
         #Printing of the result
-        print(f"The orthonormal matrix of the given matrix is: ")
+        print(f"\nThe orthonormal matrix of the given matrix is: ")
         for row in end_matrix.tolist():
             print(row)
     else:
@@ -94,3 +107,5 @@ def main():
         print("Input Error: The input is not linearly independent")
 
 main()
+
+
