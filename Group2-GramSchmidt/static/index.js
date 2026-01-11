@@ -91,16 +91,14 @@ function SendRequest() {
 
     let matrix_input = [];
 
-    for(let i = 0; i<rows; i++) 
-    {
-      let row = [];
-      for(let j = 0; j<cols; j++)
-      {
-        const input = matrix.rows[i].cells[j].querySelector("input"); 
-        row.push(input ? Number(input.value) : 0);
-      }
-      matrix_input.push(row);
+    for (let i = 1; i < rows; i++) {
+    let row = [];
+    for (let j = 0; j < cols; j++) {
+      const input = matrix.rows[i].cells[j].querySelector("input");
+      row.push(input ? Number(input.value) : 0);
     }
+    matrix_input.push(row);
+  }
 
   fetch("/Group2", {
     method: "POST",
@@ -116,7 +114,29 @@ function SendRequest() {
 const button = document.querySelector(".compute-btn");
 button.addEventListener("click", SendRequest);
 
-//Display Result Error
-function displayResult(result) {
-  //Input Display Result here
+function displayResult(data) {
+  const resultContainer = document.getElementById("output");
+  resultContainer.innerHTML = "";
+
+  if (data.result === 0) {
+    const errorMsg = document.createElement("div");
+    errorMsg.innerText = "The vectors are Linearly Dependent. No Orthonormal Basis exists.";
+    resultContainer.appendChild(errorMsg);
+    return;
+  }
+
+  const header = document.createElement("p");
+  header.innerText = "The orthonormal basis vectors are:";
+  resultContainer.appendChild(header);
+
+  data.result.forEach((row, index) => {
+    const rowDiv = document.createElement("div");
+
+    const formattedRow = row.map(val => {
+        return val.replace(/sqrt\(([^)]+)\)/g, '√$1').replace(/\*/g, '');
+    });
+
+    rowDiv.innerText = `v${index + 1} = [ ${formattedRow.join(", ")} ]`;
+    resultContainer.appendChild(rowDiv);
+  });
 }

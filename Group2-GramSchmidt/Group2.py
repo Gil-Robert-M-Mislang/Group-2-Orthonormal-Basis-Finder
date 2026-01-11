@@ -13,7 +13,7 @@ def home():
 def LI_tester(input):
     size = input.shape #Determines the Shape of the matrix
 
-    #Compares the rows and columns 
+    #Compares the rows and columns
     if size[1] < size[0]:
         return False
     elif size[0] == size[1]:
@@ -21,15 +21,15 @@ def LI_tester(input):
         determinant = int(np.linalg.det(input))
         if determinant == 0:
             return False
-        
+
         return True
     else:
         #Checks for any free variable
         pivot = np.linalg.matrix_rank(input)
         if pivot < size[0]:
             return False
-        
-        return True
+
+    return True
     
 #Sum_Projection functions helps in adding all the projection
 # of a given matrix from the first vector up to the index of
@@ -81,31 +81,43 @@ def Gram_Schmidt(input, size):
 def main():
     result = []
     data = request.get_json()
-    
-    # Convert to numpy array
+
     matrix = np.array(data["matrix"])
-    #Getting the size of the matrix
+
+    matrix = matrix.T
+
     matrix_size = matrix.shape
 
     #Checking for the independence
     independence = LI_tester(matrix)
     if independence == True:
         #Function call for the Gram Schmidt process
-        result_matrix = Gram_Schmidt(matrix, matrix_size)
+            result_matrix = Gram_Schmidt(matrix, matrix_size)
 
         #Formatting the result so that it will be readable
-        result_matrix[np.abs(result_matrix) < 1e-12] = 0
-        end_matrix = sp.Matrix(result_matrix).applyfunc(sp.nsimplify)
+            result_matrix[np.abs(result_matrix) < 1e-12] = 0
+            end_matrix = sp.Matrix(result_matrix).applyfunc(sp.nsimplify)
 
         #Printing of the result
-        print(f"\nThe orthonormal matrix of the given matrix is: ")
-        for row in end_matrix.tolist():
-            result.append([str(x) for x in row])
-        return jsonify({"result": result})
+            result_matrix[np.abs(result_matrix) < 1e-12] = 0
+
+            #Formating
+            end_matrix = sp.Matrix(result_matrix).applyfunc(
+                lambda x: sp.nsimplify(x, tolerance=1e-5, rational=False)
+            )
+
+        #convert matrix to string list
+            formatted_result = []
+            for i in range(end_matrix.rows):
+                row_strings = [str(end_matrix[i, j]) for j in range(end_matrix.cols)]
+                formatted_result.append(row_strings)
+
+            return jsonify({"result": formatted_result})
     else:
-        #Error Handling for Linearly Dependent Input
-        flag = 0
-        return jsonify({"result": flag})
+
+            flag = 0
+
+            return jsonify({"result": flag})
 
 if __name__ == "__main__":
     app.run(debug=True)

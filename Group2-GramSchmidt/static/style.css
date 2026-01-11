@@ -207,19 +207,4 @@ main {
   width: 100px;
   border: black 1px solid;
   background-color: #b7b7b7;
-} 
-
-.info-box .Trivia {
-  overflow: hidden;
-  font-family: monospace;
-  white-space: pre-wrap;
-  width: 0; 
-  animation: 
-    typing 4s steps(40, end) forwards, 
-    blink-caret .75s step-end infinite; 
-}
-
-@keyframes typing {
-  from { width: 0 }
-  to { width: 100% } 
 }
